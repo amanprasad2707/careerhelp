@@ -65,8 +65,8 @@ async function generateContent(prompt) {
     if(prompt === 'hi' || prompt ==='Hi' || prompt==="hello" || prompt ==="Hello"){
       return "Welcome to CareerHelp. How may i help you?"
     }
-    const personalizedPrompt = `${userInfo.strength} ${userInfo.interest} ${userInfo.academic_strength} ${userInfo.prefferd_environment} ${userInfo.goals}\n ${prompt}`
-    const result = await model.generateContent(personalizedPrompt);
+    // const personalizedPrompt = `${userInfo.strength} ${userInfo.interest} ${userInfo.academic_strength} ${userInfo.prefferd_environment} ${userInfo.goals}\n ${prompt}`
+    const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
     return text;
