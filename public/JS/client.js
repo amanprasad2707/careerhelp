@@ -41,11 +41,7 @@ messageInput.addEventListener('keyup', (e) => {
 })
 
 
-/*
-* Appends a message to the message area
-? @param {Object} msg - The message object containing the name and message text
-? @param {string} type - The type of message (e.g., 'incoming', 'outgoing') used to set the CSS class
-*/
+
 function appendMessage(msg, type) {
   // Create a new div element to hold the message
   const mainDiv = document.createElement('div');
@@ -92,7 +88,7 @@ function appendAiResponse(msg, type) {
   // Format the message by replacing newline characters with HTML line breaks
   const formattedMsg = msg.replace(/\n/g, '<br>'); // Replace \n with <br>
   const markup = `
-    <h4>${type === 'outgoing' ? 'You' : 'ChatterBee'}:</h4>
+    <h4>${type === 'outgoing' ? 'You' : 'CareerHelp'}:</h4>
     <p>${formattedMsg}</p>
   `;
   mainDiv.innerHTML = markup;

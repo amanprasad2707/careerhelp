@@ -1,16 +1,20 @@
 //* Set up Express server with Socket.IO for real-time communication
-const express = require('express'); // Import Express framework
-const http = require('http'); // Import Node.js HTTP module
-const dotenv = require('dotenv'); // Import dotenv for environment variables
-const app = express(); // Create Express application instance
-const server = http.createServer(app); // Create HTTP server using Express app
-const { Server } = require('socket.io'); // Import Socket.IO server class
-dotenv.config(); // Load environment variables from .env file
-const port = process.env.PORT; // Define port number from environment variables
+const express = require('express');
+const http = require('http');
+const dotenv = require('dotenv');
+const app = express();
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const {userInfo} = require('./userInfo');
+dotenv.config();
+const port = process.env.PORT;
 const io = new Server(server); // Create Socket.IO server instance
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 const users = {}; // Initialize object to store active users
+console.log(userInfo);
+
+
 
 //* Serve static files from the 'public' directory
 app.use(express.static('public'));
@@ -58,18 +62,22 @@ socket.on('promptForGemini', async(prompt)=>{
 async function generateContent(prompt) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   try {
-    const result = await model.generateContent(prompt);
+    if(prompt === 'hi' || prompt ==='Hi' || prompt==="hello" || prompt ==="Hello"){
+      return "Welcome to CareerHelp. How may i help you?"
+    }
+    const personalizedPrompt = `${userInfo.strength} ${userInfo.interest} ${userInfo.academic_strength} ${userInfo.prefferd_environment} ${userInfo.goals}\n ${prompt}`
+    const result = await model.generateContent(personalizedPrompt);
     const response = await result.response;
     const text = response.text();
     return text;
   } catch (error) {
     // Handle safety-related issues that block the content generation
     if (error.response && error.response.candidates && error.response.candidates[0].finishReason === 'SAFETY') {
-      console.error('Response was blocked due to safety reasons:', error.response.candidates[0].safetyRatings);
+      console.error('Response was blocked due to safety reasons:');
       return 'The generated content was blocked due to safety concerns. Please try a different prompt.';
     } else {
       // Handle other errors that occur during content generation
-      console.error('An error occurred while generating content:', error);
+      console.error('An error occurred while generating content:');
       return 'An error occurred while generating content. Please try again later.';
     }
   }
